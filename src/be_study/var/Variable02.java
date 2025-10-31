@@ -53,7 +53,7 @@ public class Variable02 {
 		double d4 = 0.0012;
 		double d5 = 0.12E-2;
 		
-		float f1 = 23.45; // float타입은 값 뒤에 f 표기
+		float f1 = 23.45f; // float타입은 값 뒤에 f 표기
 
 //		논리형 true false 참 거짓
 		boolean open = true;

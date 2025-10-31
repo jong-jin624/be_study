@@ -23,11 +23,14 @@ public class Variable06 {
 		
 		System.out.println(str1);
 		System.out.println(str2);
+//		boolean b2 = (str1 == str2); X 문자열 비교는 .equals 써야함
 //		boolean b2 = (str1.equals(str2));
 //		System.out.println(b2);
+		
 //		System.out.println(str1 == str2); X 문자열 비교는 .equals 써야함
 		System.out.println(str1.equals(str2));
 		System.out.println(str1.equals("햄버거"));
+		
 	}
 
 }
