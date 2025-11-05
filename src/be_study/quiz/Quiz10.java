@@ -17,8 +17,9 @@ public class Quiz10 {
 		int scoreE = scanner.nextInt();
 		
 		int total = scoreK + scoreM + scoreE;
-		double avg = total / 3;
+		double avg = total / 3.0;
 		
+		// !조건 , 조건 == false / 합격 불합격 위치 바꿀 수 있음
 		if(scoreK >= 40 && scoreM >= 40 && scoreE >= 40 && avg >= 60) {
 			System.out.println("국어 : "+ scoreK);
 			System.out.println("수학 : "+ scoreM);
