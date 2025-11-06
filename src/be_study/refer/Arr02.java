@@ -25,6 +25,12 @@ public class Arr02 {
 */
 		
 		int[] nArray1 = {1,2,3,4,5,6};
+		System.out.print(nArray1[0] + " ");
+		System.out.print(nArray1[1] + " ");
+		System.out.print(nArray1[2] + " ");
+		
+		System.out.println();
+		
 		int[][] nArray2 = { {1,2,3}, {4,5,6} };
 		// ㅁㅁㅁ  1 2 3
 		// ㅁㅁㅁ  4 5 6
@@ -43,7 +49,6 @@ public class Arr02 {
 				System.out.print(nArray2[i][j] + " ");
 			}
 			System.out.println();
-
 		}
 		
 		
