@@ -22,7 +22,7 @@ public class Quiz20_review {
 		while (true) {
 			System.out.println("======== 메뉴 ========");
 			for (int i = 0; i < menuArr.length; i++) {
-				System.out.printf("%d.%8s%7d원\n", i + 1, menuArr[i], priceArr[i]);
+				System.out.printf("%d.%-8s%7d원\n", i + 1, menuArr[i], priceArr[i]);
 			}
 			System.out.println("=====================");
 
