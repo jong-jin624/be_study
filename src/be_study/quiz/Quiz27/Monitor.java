@@ -34,6 +34,7 @@ public class Monitor {
 	int raisePrice(int raise) {
 		this.price += raise;
 		return this.price;
+//		return this.price + raise; 리턴값만 40만 실제 값은 33만 출력
 	}
 
 	void printInfo() {
