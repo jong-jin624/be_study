@@ -1,18 +1,27 @@
 package be_study.quiz.Quiz30;
 
 public class Computer {
+	
+//	String[] osType = { "윈도우10", "애플 OS X", "안드로이드" };
+	public static final String[] OS_TYPE = {"윈도우10", "애플 OS X", "안드로이드"};
 
-	String[] osType = { "윈도우10", "애플 OS X", "안드로이드" };
-	int os = 0;
-	int memory = 0;
-
-	Computer(int os, int memory) {
-		this.os = os;
+//	int os = 0;
+//	int memory = 0;
+	int index;
+	int memory;
+	
+//	Computer(int os, int memory) {
+//		this.os = os;
+//		this.memory = memory;
+//	}
+	
+	Computer(int index, int memory) {
+		this.index = index;
 		this.memory = memory;
 	}
 
 	public void print() {
-		System.out.printf("운영체제: %s, 메인메모리: %d\n", osType[os], memory);
+		System.out.printf("운영체제: %s, 메인메모리: %d\n", OS_TYPE[index], memory);
 	}
 
 	public static void main(String[] args) {
@@ -22,7 +31,7 @@ public class Computer {
 		pc.print();
 		apple.print();
 		galaxy.print();
-	}
+	} 
 
 }
 

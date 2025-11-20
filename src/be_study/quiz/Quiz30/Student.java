@@ -20,11 +20,11 @@ public class Student {
 	}
 	
 	public String getMajor() {
-		return this.major;
+		return major;
 	}
 	
 	public String getNumbers() {
-		return this.numbers;
+		return numbers;
 	}
 
 	public static void main(String[] args) {

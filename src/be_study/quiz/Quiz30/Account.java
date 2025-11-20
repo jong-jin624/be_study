@@ -49,9 +49,11 @@ public class Account {
 
     public static void main(String[] args) {
         Account ac1 = new Account("전우치", 10000);
-
-        ac1.deposit(8000);  
-        ac1.withdraw(5000); 
+        System.out.println("현재 잔액: " + ac1.getBalance()); 
+        
+        System.out.println("8000원 입금: " +ac1.deposit(8000));  
+        
+        System.out.println("5000원 출금: " +ac1.withdraw(5000));  
 
         System.out.println("최종 잔액: " + ac1.getBalance());   
     }
