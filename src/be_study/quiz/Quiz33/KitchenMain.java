@@ -5,11 +5,11 @@ public class KitchenMain {
 
 		KitchenSize kitchen = new KitchenSize();
 		kitchen.space= 12;
-		kitchen.wallpaperColor = "화이트";
+		kitchen.wallpaperColor = "그레이";
 		kitchen.height = 250;
 
 		Frige frige = new Frige();
-		frige.brand = "삼성";
+		frige.brand = "LG";
 		frige.literSize = 600;
 		frige.doorCount = 3;
 
@@ -46,7 +46,7 @@ public class KitchenMain {
 		t2.color = "화이트";
 		t2.sizeMuch = 30;
 
-		kitchen.trashCans = new TrashCan[] { t1, t2 };
+		kitchen.TrashCan = new TrashCan[] { t1, t2 };
 
 		Cup c1 = new Cup();
 		c1.size = 350;
@@ -58,7 +58,7 @@ public class KitchenMain {
 		c2.material = "플라스틱";
 		c2.color = "블루";
 
-		kitchen.cups = new Cup[] { c1, c2 };
+		kitchen.Cup = new Cup[] { c1, c2 };
 
 		System.out.println("KitchenSize 구성 완료!");
 	}
