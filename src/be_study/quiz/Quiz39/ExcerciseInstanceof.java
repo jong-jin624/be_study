@@ -16,10 +16,6 @@ package be_study.quiz.Quiz39;
 //반환타입 없음 :
 //매개변수: Robot r 인스턴스 또는 Robot 의 자손 인스턴스
 
- action (){
-	
-}
-
 class ExcerciseInstanceof {
 	public static void main(String[] args) {
 		Robot[] arr = { new DanceRobot(), new SingRobot(), new DrawRobot() };
@@ -27,9 +23,22 @@ class ExcerciseInstanceof {
 			action(arr[i]);
 	} // main
 
-	private static void action(Robot robot) {
+	private static void action(Robot r) {
 		// TODO Auto-generated method stub
-
+		if(r instanceof DanceRobot) {
+			DanceRobot dr = (DanceRobot)r;
+			dr.dance();
+		}
+		
+		if(r instanceof SingRobot) {
+			SingRobot sr = (SingRobot)r;
+			sr.sing();
+		}
+		
+		if(r instanceof DrawRobot) {
+			((DrawRobot)r).draw();
+		}
+		
 	}
 }
 
