@@ -8,8 +8,10 @@ public class Exp02 {
 		int[] arr = new int[3];
 		
 		try {
+			System.out.println("1");
 			arr = null;
 			arr[5] = 10;
+			
 		} catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println("ArrayIndexOutOfBoundsException catch block");
 		} catch ( NullPointerException e) {
@@ -18,6 +20,7 @@ public class Exp02 {
 		catch ( Exception e) {
 			System.out.println("Exception catch block");
 		}
+		System.out.println("2");
 	}
 
 }

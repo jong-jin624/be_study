@@ -15,16 +15,16 @@ public class Exp03 {
 		}
 
 		try {
-			s.addItem1("둘");
+			s.addItem2("둘");
 		} catch (Exception e) {
-			System.out.println("addItem2을 호출한 main에서 하나 예외처리");
+			System.out.println("addItem2을 호출한 main에서 둘 예외처리");
 		}
 
 		try {
 			s.addItem3("셋");
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("addItem3을 호출한 main에서 하나 예외처리");
+			System.out.println("addItem3을 호출한 main에서 셋 예외처리");
 		}
 
 		try {
