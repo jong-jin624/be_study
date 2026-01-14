@@ -65,27 +65,37 @@ public class DBSampleMain {
 			System.out.println("deptno 90 번 삭제됨");
 		}
 		
-		//Update 처리 > 사전에 존재데이터
+		
+		//Update 처리
+		// 사전에 존재하는 데이터
+		// 이거는 db 쪽에서 직접 쿼리로 실행하여 추가
+		// INSERT INTO dept (deptno, dname, loc) VALUES (50, 'COMPUTER', 'SEOUL');
 		
 		Dept update = new Dept(50, "DEVELOP", "SEOUL");
 		int ru1 = deptDAO.modifyDept(update);
-		if(ru1>0) {
-			System.out.println("update가 성공했다~");
+		if(ru1 > 0 ) {
+			System.out.println("update 가 성공했다~");
 		}
 		
 		update = new Dept(50, "INFRA", "BUSAN");
 		ru1 = deptDAO.modifyDept(update);
-		if(ru1>0) {
-			System.out.println("update가 성공했다~");
+		if(ru1 > 0 ) {
+			System.out.println("update 가 성공했다~");
 		}
 		
-		Dept ud1 = deptDAO.findDeptByDeptno(50);
+		//Update 처리
+		// 기존 데이터 조회 -> 바꾸고 싶은 부분만 변경(유지할 데이터는 기존값 그대로) -> 다시 Update 시도 
+		Dept ud1 = deptDAO.findDeptByDeptno(50);  //50번 키값으로 조회
+		//ud1 -> 활용 -> 표시 
+		// 수정할 사항 변경 -> 수정 시도
+		// LOC "BUSAN" -> "INCHEON"
 		ud1.setLoc("INCHEON");
 		
-		deptDAO.modifyDept(ud1); // key값 50으로 조건 -> LOC 수정, DNAME 기존값 그대로 유지
-		if(r2 > 0) {
-			System.out.println("ru2 업뎃 잘됨.");
+		int ru2 = deptDAO.modifyDept(ud1);  //키값 50 으로 조건 -> LOC 수정, DNAME 기존값 그대로 유지
+		if(ru2 > 0) {
+			System.out.println("ru2 업데이트 잘 됨");
 		}
+		
 		
 		Dept d1 = deptDAO.findDeptByDeptno(20);
 		System.out.println(d1.getDeptno() + " " + d1.getDname() + " " + d1.getLoc());
@@ -129,6 +139,12 @@ public class DBSampleMain {
 	
 
 }
+
+
+
+
+
+
 
 
 
