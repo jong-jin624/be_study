@@ -12,37 +12,100 @@ public class DBSampleMain {
 
 	public static void main(String[] args) {
 		
-//		findProduct();
+		DeptDAO deptDAO = new DeptDAO();
 		
-//		selectDept();
+		//Insert 저장
+		int r1 = deptDAO.saveDept(70, "COMPUTER", "SEOUL");
+		if(r1 > 0) {
+			System.out.println("저장이 잘 됐나보다~~");
+		}
 		
-//		selectDeptWhere();
+		Dept saveD1 = new Dept();
+		saveD1.setDeptno(90);
+		saveD1.setDname("QA");
+		saveD1.setLoc("BUSAN");
 		
-//		findDeptByDeptnoPrint(20);
-//		
-//		findDeptByDeptnoPrint(40);
-//		
-//		findDeptByDeptnoPrint(10);
+		int r2 = deptDAO.saveDept(saveD1);
+		if(r2 > 0) {
+			System.out.println("객체 매개변수로 넘긴 r2도 저장이 잘 됐나보다~~");
+		}
 		
-		Dept d1 = findDeptByDeptno(20);
+		//여러개 List 형태로 저장
+		List<Dept> saveDeptList = new ArrayList<Dept>();
+		saveDeptList.add(new Dept(81, "DNAME81", "LOC81"));
+		saveDeptList.add(new Dept(82, "DNAME82", "LOC82"));
+		saveDeptList.add(new Dept(83, "DNAME83", "LOC83"));
+		
+		//저장
+		int r3 = 0;
+		for(Dept d : saveDeptList) {
+			int result = deptDAO.saveDept(d);
+			r3 += result;
+			if(result > 0 ) {
+				System.out.println("dept 저장 잘됨");
+			}
+		}
+		System.out.println("총 몇개 저장되었나 저장된 행 수 : " + r3);
+
+		//Delete 삭제
+		int rd1 = deptDAO.removeDept(70);
+		int rd2 = deptDAO.removeDept(81);
+		int rd3 = deptDAO.removeDept(82);
+		int rd4 = deptDAO.removeDept(83);
+		
+		//Dept rmd = new Dept(90, "name", "loc");
+		Dept rmd = new Dept(90, null, null);
+		int rd5 = deptDAO.removeDept(rmd);
+		
+		if(rd1 > 0) {
+			System.out.println("deptno 70 번 삭제됨");
+		}
+		
+		if(rd5 > 0) {
+			System.out.println("deptno 90 번 삭제됨");
+		}
+		
+		//Update 처리 > 사전에 존재데이터
+		
+		Dept update = new Dept(50, "DEVELOP", "SEOUL");
+		int ru1 = deptDAO.modifyDept(update);
+		if(ru1>0) {
+			System.out.println("update가 성공했다~");
+		}
+		
+		update = new Dept(50, "INFRA", "BUSAN");
+		ru1 = deptDAO.modifyDept(update);
+		if(ru1>0) {
+			System.out.println("update가 성공했다~");
+		}
+		
+		Dept ud1 = deptDAO.findDeptByDeptno(50);
+		ud1.setLoc("INCHEON");
+		
+		deptDAO.modifyDept(ud1); // key값 50으로 조건 -> LOC 수정, DNAME 기존값 그대로 유지
+		if(r2 > 0) {
+			System.out.println("ru2 업뎃 잘됨.");
+		}
+		
+		Dept d1 = deptDAO.findDeptByDeptno(20);
 		System.out.println(d1.getDeptno() + " " + d1.getDname() + " " + d1.getLoc());
 		System.out.println(d1.toString());
 		
-		Dept d2 = findDeptByDeptno(70);
+		Dept d2 = deptDAO.findDeptByDeptno(70);
 		if(d2 != null)
 			System.out.println(d2.toString());
 		
-		Dept d3 = findDeptByDname("SALES");
+		Dept d3 = deptDAO.findDeptByDname("SALES");
 		System.out.println(d3.toString());
 		
-		Dept d4 = findDeptByDname("DEEPSLEEP");
+		Dept d4 = deptDAO.findDeptByDname("DEEPSLEEP");
 		if(d4 == null) {
 			System.out.println("해당 부서명 데이터 없음");
 		} else {
 			System.out.println(d4.toString());
 		}
 		
-		List<Dept> deptList = findDeptList();
+		List<Dept> deptList = deptDAO.findDeptList();
 		
 		if(deptList == null) {
 			System.out.println("데이터 없음");
@@ -53,566 +116,24 @@ public class DBSampleMain {
 			}
 		}
 		
-		List<Dept> deptList2 = findDeptList2();
-		//if(deptList2 == null)
-		if( deptList2.size() == 0) {  //초기화O    추가된 데이터가 X
+		ProductDAO productDAO = new ProductDAO();
+		Product p = productDAO.findProductByPCode(103);
+		System.out.println(p.toString());
+
+		List<Product> pList = productDAO.findProductList();
+		for(Product pd : pList) {
+			System.out.println(pd.toString());
 		}
 		
-		if( deptList2 != null && deptList2.size() > 0 ) {
-			
-			//조회된 데이터가 있는 경우 처리할 코드
-			for(Dept d : deptList2) {
-				System.out.println(d.toString());
-			}
-		}
 	}	
 	
-	public static void findProduct() {
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-				
-		//DB 연결 정보
-		//String db_url = "jdbc:oracle:thin:@150.25.33.191:2621:orcl";
-		String db_url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String db_id = "scott";
-		String db_pw = "tiger";
-		
-		Connection conn = null; //db 연결
-		PreparedStatement psmt = null;  //db연결하여 sql 명령 실행해주는 객체
-		ResultSet rs = null; //sql 실행 후 select 결과를 저장하는 객체
-		
-		
-		//DB 연결
-		try {
-			conn = DriverManager.getConnection(db_url, db_id, db_pw);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//실행 쿼리 준비
-		String sqlQuery = " select * from product ";
-		
-		//쿼리 실행 후 후속 데이터 처리
-		try {
-			psmt = conn.prepareStatement(sqlQuery);
-			rs = psmt.executeQuery();
-			
-			while(rs.next()) { // 다음에 읽어올 데이터가 있는가? true 다음 데이터가 있다. 
-				System.out.print( rs.getInt("p_code") + " ");
-				System.out.print( rs.getString("p_name") + " ");
-				System.out.println( rs.getInt("p_price") );
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//DB 연결 종료
-		try {
-			if(rs != null) {
-				rs.close();  //Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
-			}
-			if(psmt != null) {
-				psmt.close();
-			}
-			if(conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	//				   readDept   findDept   findDeptList
-	public static void selectDept() {
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-				
-		//DB 연결 정보
-		//String db_url = "jdbc:oracle:thin:@150.25.33.191:2621:orcl";
-		String db_url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String db_id = "scott";
-		String db_pw = "tiger";
-		
-		Connection conn = null; //db 연결
-		PreparedStatement psmt = null;  //db연결하여 sql 명령 실행해주는 객체
-		ResultSet rs = null; //sql 실행 후 select 결과를 저장하는 객체
-		
-		
-		//DB 연결
-		try {
-			conn = DriverManager.getConnection(db_url, db_id, db_pw);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//실행 쿼리 준비
-		String sqlQuery = " select * from dept ";
-		
-		//쿼리 실행 후 후속 데이터 처리
-		try {
-			psmt = conn.prepareStatement(sqlQuery);
-			rs = psmt.executeQuery();
-			
-			while(rs.next()) { // 다음에 읽어올 데이터가 있는가? true 다음 데이터가 있다. 
-				//   column Index 값 기준으로 조회
-				// System.out.print( rs.getInt(1) + " ");
-				// System.out.print( rs.getString(2) + " ");
-				// System.out.println( rs.getString(3) );
-				
-				System.out.print( rs.getInt("deptno") + " ");
-				System.out.print( rs.getString("dname") + " ");
-				System.out.println( rs.getString("loc") );
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//DB 연결 종료
-		try {
-			if(rs != null) {
-				rs.close();  //Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
-			}
-			if(psmt != null) {
-				psmt.close();
-			}
-			if(conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public static void selectDeptWhere() {
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-				
-		//DB 연결 정보
-		String db_url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String db_id = "scott";
-		String db_pw = "tiger";
-		
-		Connection conn = null; //db 연결
-		PreparedStatement psmt = null;  //db연결하여 sql 명령 실행해주는 객체
-		ResultSet rs = null; //sql 실행 후 select 결과를 저장하는 객체
-		
-		
-		//DB 연결
-		try {
-			conn = DriverManager.getConnection(db_url, db_id, db_pw);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//실행 쿼리 준비
-		String sqlQuery = " select * from dept where deptno = 30 ";
-		
-		//쿼리 실행 후 후속 데이터 처리
-		try {
-			psmt = conn.prepareStatement(sqlQuery);
-			rs = psmt.executeQuery();
-			
-			while(rs.next()) { // 다음에 읽어올 데이터가 있는가? true 다음 데이터가 있다. 
-				System.out.print( rs.getInt("deptno") + " ");
-				System.out.print( rs.getString("dname") + " ");
-				System.out.println( rs.getString("loc") );
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//DB 연결 종료
-		try {
-			if(rs != null) {
-				rs.close();  //Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
-			}
-			if(psmt != null) {
-				psmt.close();
-			}
-			if(conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public static void findDeptByDeptnoPrint(int deptno) {
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-				
-		//DB 연결 정보
-		String db_url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String db_id = "scott";
-		String db_pw = "tiger";
-		
-		Connection conn = null; //db 연결
-		PreparedStatement psmt = null;  //db연결하여 sql 명령 실행해주는 객체
-		ResultSet rs = null; //sql 실행 후 select 결과를 저장하는 객체
-		
-		
-		//DB 연결
-		try {
-			conn = DriverManager.getConnection(db_url, db_id, db_pw);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//실행 쿼리 준비
-		String sqlQuery = " select * from dept where deptno = ? ";
-		//select * from dept where deptno = 30
-		//" select * from dept where deptno =  " + deptno;
-		//" select * from dept where deptno = 20  ";
-		//System.out.printf("여기 %s 여기 %d", "문자", 50);
-		
-		//쿼리 실행 후 후속 데이터 처리
-		try {
-			psmt = conn.prepareStatement(sqlQuery);
-			
-			//파라미터 세팅 (쿼리에 있는 ? 위치 채우기)
-			psmt.setInt(1, deptno);
-			
-			rs = psmt.executeQuery();
-			
-			while(rs.next()) { // 다음에 읽어올 데이터가 있는가? true 다음 데이터가 있다. 
-				System.out.print( rs.getInt("deptno") + " ");
-				System.out.print( rs.getString("dname") + " ");
-				System.out.println( rs.getString("loc") );
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//DB 연결 종료
-		try {
-			if(rs != null) {
-				rs.close();  //Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
-			}
-			if(psmt != null) {
-				psmt.close();
-			}
-			if(conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public static Dept findDeptByDeptno(int deptno) {
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-				
-		//DB 연결 정보
-		String db_url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String db_id = "scott";
-		String db_pw = "tiger";
-		
-		Connection conn = null; //db 연결
-		PreparedStatement psmt = null;  //db연결하여 sql 명령 실행해주는 객체
-		ResultSet rs = null; //sql 실행 후 select 결과를 저장하는 객체
-		
-		
-		//DB 연결
-		try {
-			conn = DriverManager.getConnection(db_url, db_id, db_pw);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		Dept dept = null;
-		
-		//실행 쿼리 준비
-		String sqlQuery = " select * from dept where deptno = ? ";
-		
-		//쿼리 실행 후 후속 데이터 처리
-		try {
-			
-			psmt = conn.prepareStatement(sqlQuery);
-			
-			//파라미터 세팅 (쿼리에 있는 ? 위치 채우기)
-			psmt.setInt(1, deptno);
-			
-			rs = psmt.executeQuery();
-			
-			//조회 결과가 1개 행만 나오는 상황
-			if(rs.next()) { // 다음에 읽어올 데이터가 있는가? true 다음 데이터가 있다. 
-				//데이터가 있다
-				dept = new Dept();
-				
-				dept.setDeptno( rs.getInt("deptno") );
-				dept.setDname( rs.getString("dname") );
-				dept.setLoc( rs.getString("loc"));
-			}
-			//if 가 거짓이면 데이터가 없다...
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//DB 연결 종료
-		try {
-			if(rs != null) {
-				rs.close();  //Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
-			}
-			if(psmt != null) {
-				psmt.close();
-			}
-			if(conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return dept;
-	}
-	
-	public static Dept findDeptByDname(String dname) {
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-				
-		//DB 연결 정보
-		String db_url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String db_id = "scott";
-		String db_pw = "tiger";
-		
-		Connection conn = null; //db 연결
-		PreparedStatement psmt = null;  //db연결하여 sql 명령 실행해주는 객체
-		ResultSet rs = null; //sql 실행 후 select 결과를 저장하는 객체
-		
-		
-		//DB 연결
-		try {
-			conn = DriverManager.getConnection(db_url, db_id, db_pw);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		Dept dept = null;
-		
-		//실행 쿼리 준비
-		String sqlQuery = " select * from dept where dname = ?  ";
-		
-		//쿼리 실행 후 후속 데이터 처리
-		try {
-			
-			psmt = conn.prepareStatement(sqlQuery);
-			
-			//파라미터 세팅 (쿼리에 있는 ? 위치 채우기)
-			psmt.setString(1, dname);
-			
-			rs = psmt.executeQuery();
-			
-			//조회 결과가 1개 행만 나오는 상황
-			if(rs.next()) { // 다음에 읽어올 데이터가 있는가? true 다음 데이터가 있다. 
-				//데이터가 있다
-				dept = new Dept();
-				
-				dept.setDeptno( rs.getInt("deptno") );
-				dept.setDname( rs.getString("dname") );
-				dept.setLoc( rs.getString("loc"));
-			}
-			//if 가 거짓이면 데이터가 없다...
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//DB 연결 종료
-		try {
-			if(rs != null) {
-				rs.close();  //Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
-			}
-			if(psmt != null) {
-				psmt.close();
-			}
-			if(conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return dept;
-	}
-	
-	public static List<Dept> findDeptList() {
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-				
-		//DB 연결 정보
-		String db_url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String db_id = "scott";
-		String db_pw = "tiger";
-		
-		Connection conn = null; //db 연결
-		PreparedStatement psmt = null;  //db연결하여 sql 명령 실행해주는 객체
-		ResultSet rs = null; //sql 실행 후 select 결과를 저장하는 객체
-		
-		
-		//DB 연결
-		try {
-			conn = DriverManager.getConnection(db_url, db_id, db_pw);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		List<Dept> deptList = null;
-		
-		//실행 쿼리 준비
-		String sqlQuery = " select * from dept ";
-		
-		//쿼리 실행 후 후속 데이터 처리
-		try {
-			
-			psmt = conn.prepareStatement(sqlQuery);			
-			rs = psmt.executeQuery();
-			
-			//조회 결과가 1개 행만 나오는 상황
-			while(rs.next()) { // 다음에 읽어올 데이터가 있는가? true 다음 데이터가 있다. 
-				//데이터가 있다
-				
-				
-				//dept 조회 한 행 데이터
-				Dept dept = new Dept();
-				dept.setDeptno( rs.getInt("deptno") );
-				dept.setDname( rs.getString("dname") );
-				dept.setLoc( rs.getString("loc"));
-				
-				if(deptList == null) {
-					deptList = new ArrayList<Dept>();
-				}
-				deptList.add(dept); //최종 return 할 dept목록 list에 추가
-			}
-			//if 가 거짓이면 데이터가 없다...
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//DB 연결 종료
-		try {
-			if(rs != null) {
-				rs.close();  //Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
-			}
-			if(psmt != null) {
-				psmt.close();
-			}
-			if(conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return deptList;
-	}
-	
-	public static List<Dept> findDeptList2() {
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-				
-		//DB 연결 정보
-		String db_url = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String db_id = "scott";
-		String db_pw = "tiger";
-		
-		Connection conn = null; //db 연결
-		PreparedStatement psmt = null;  //db연결하여 sql 명령 실행해주는 객체
-		ResultSet rs = null; //sql 실행 후 select 결과를 저장하는 객체
-		
-		
-		//DB 연결
-		try {
-			conn = DriverManager.getConnection(db_url, db_id, db_pw);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		List<Dept> deptList = new ArrayList<Dept>();
-		
-		//실행 쿼리 준비
-		String sqlQuery = " select * from dept ";
-		
-		//쿼리 실행 후 후속 데이터 처리
-		try {
-			
-			psmt = conn.prepareStatement(sqlQuery);			
-			rs = psmt.executeQuery();
-			
-			//조회 결과가 1개 행만 나오는 상황
-			while(rs.next()) { // 다음에 읽어올 데이터가 있는가? true 다음 데이터가 있다. 
-				//데이터가 있다
-				
-				//dept 조회 한 행 데이터
-				Dept dept = new Dept();
-				dept.setDeptno( rs.getInt("deptno") );
-				dept.setDname( rs.getString("dname") );
-				dept.setLoc( rs.getString("loc"));
-				
-				deptList.add(dept); //최종 return 할 dept목록 list에 추가
-			}
-			//if 가 거짓이면 데이터가 없다...
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		//DB 연결 종료
-		try {
-			if(rs != null) {
-				rs.close();  //Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
-			}
-			if(psmt != null) {
-				psmt.close();
-			}
-			if(conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return deptList;
-	}
+
 }
+
+
+
+
+
+
+
+
