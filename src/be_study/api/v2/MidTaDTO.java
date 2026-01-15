@@ -1,4 +1,4 @@
-package be_study.api;
+package be_study.api.v2;
 
 public class MidTaDTO {
 	

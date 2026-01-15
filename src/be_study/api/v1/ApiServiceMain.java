@@ -1,4 +1,4 @@
-package be_study.api;
+package be_study.api.v1;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
