@@ -1,4 +1,4 @@
-package be_study.api.test;
+package be_study.api.test2;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,6 +13,8 @@ import java.io.IOException;
 
 public class VilageFcstInfoServiceRepository {
 
+	// 1. API 요청하기 -> String Text 응답 받기
+	// DAO / Repository
 	    public String requestApi_getVilageFcst(String searchDate) throws Exception {
 	        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); /*URL*/
 	        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=d1c4e68b68cb1e4be9fef9fa699dc40064660b4b6502ef4f06c469085d8a75e6"); /*Service Key*/
@@ -46,15 +48,20 @@ public class VilageFcstInfoServiceRepository {
 	        return sb.toString();
 	    }
 
+	// 2. 응답받은 Text (JSON 포맷) -> JSON 파싱 -> DTO 
+	// DTO
 	public VilageDTO getVilageFcst(String searchDate) {
 		VilageDTO vilageDTO = null;
 		try {
+
+			//api 요청 텍스트 획득
 
 			String jsonString = requestApi_getVilageFcst(searchDate);
 
 
 			vilageDTO = new VilageDTO();
 
+			//jsonString 파싱
 			JSONParser parser = new JSONParser();
 			JSONObject obj = (JSONObject)parser.parse(jsonString);
 			

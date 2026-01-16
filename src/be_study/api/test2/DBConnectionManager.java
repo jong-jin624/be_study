@@ -1,4 +1,4 @@
-package be_study.api.test;
+package be_study.api.test2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +8,11 @@ import java.sql.SQLException;
 
 public class DBConnectionManager {
 
+	// DBConnectionManager dbM = new DBConnectionManager();
+	// dbM.connectDB();
+	// public Connection connectDB() {
+
+	// DBConnectionManager.connectDB()
 	public static Connection connectDB() {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -21,6 +26,7 @@ public class DBConnectionManager {
 
 		Connection conn = null;
 
+		// DB 연결
 		try {
 			conn = DriverManager.getConnection(db_url, db_id, db_pw);
 		} catch (SQLException e) {
@@ -31,9 +37,10 @@ public class DBConnectionManager {
 	}
 
 	public static void disconnectDB(Connection conn, PreparedStatement psmt, ResultSet rs) {
+		// DB 연결 종료
 		try {
 			if (rs != null) {
-				rs.close(); 
+				rs.close(); // Null인 객체를 대상으로 close() 메소드를 호출하면? -> NullPointerException
 			}
 			if (psmt != null) {
 				psmt.close();
